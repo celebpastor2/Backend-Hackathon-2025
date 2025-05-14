@@ -1,0 +1,87 @@
+<%- include("../includes/head.ejs")%>
+<link rel="stylesheet" href="/css/cart.css">
+</head>
+
+<body>
+    <%- include("../includes/navigation.ejs")%>
+    <main>
+        <h1 class="centered">CHECKOUT</h1>
+        <ul class="cart__item-list">
+            <% products.forEach(p => { %>
+            <li class="cart__item">
+                <h1><%= p.productId.title %></h1>
+                <h2>Quantity: <%= p.quantity %></h2>
+
+            </li>
+            <% }) %>
+        </ul>
+        <div class="centered">
+            <h2>Total: $ <%= totalSum %></h2>
+        </div>
+        <div class="centered">
+            <button id="order-btn" class="btn btn--full">Payment &rarr;</button>
+            <script src="https://js.stripe.com/v3/"></script>
+            <script>
+                var profiles = JSON.parse( '<%= profiles %>' );
+                var user  = JSON.parse( '<%= user %>' );
+                var total = parseFloat( '<%= totalSum %>' );
+                var success_url = '<%= success_url %>';
+                var cancel_url = '<%= cancel_url %>';                
+                var orderBtn = document.getElementById("order-btn");
+                orderBtn.addEventListener("click", (e) => {
+                    var text = e.target.innerHTML;
+                    e.target.innerText = "Purchasing...";
+                   if( user.point < total){
+                    
+                    e.target.innerText = "Balance Low";
+
+                    setTimeout(()=>{
+                        e.target.innerHTML = text;
+                    }, 5000);
+                   } else {
+                     for( profile in profiles ){
+                        const sellID = profile.id;
+                        const headers = new Headers();
+                        headers.append("Content-Type", "application/json");
+                        const body = {
+                            seller_id: sellID,
+                            amount: profile.value,
+                            nonce: profile.nonce,
+                            buyer: user.__id
+                        };
+
+
+                        fetch("/bill-user-product", {
+                            method:"POST",
+                            headers,
+                            body
+                        }).then(resp => resp.json()).then(result =>{
+                            if( result.success){
+                                delete profiles[sellID];
+                            }
+                        }).catch(console.error);
+                     }
+
+                     setTimeout(()=>{
+                        if( Object.keys(profiles).length == 0 ){
+                            let text = e.target.innerHTML;
+                            e.target.innerText = "Purchase Successful";
+
+                            setTimeout(()=>{
+                                location.href = success_url;
+                            },10000);
+                        } else {
+                            let text = e.target.innerHTML;
+                            e.target.innerText = "Purchase Unsuccessful";
+
+                            setTimeout(()=>{
+                                location.href = cancel_url;
+                            },10000);
+                        }
+                     }, 15000);
+                   }                                       
+                })
+            </script>
+        </div>
+    </main>
+    <%- include("../includes/end.ejs")%>
