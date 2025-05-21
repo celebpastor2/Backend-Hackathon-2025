@@ -4,6 +4,7 @@ const fileHelper = require("../util/file");
 const path = require("path");
 const { cloudinary } = require("../util/cloudinary");
 const streamifier = require("streamifier");
+const UserModel = require('../models/user');
 
 exports.getAddProduct = (req, res, next) => {
   if (!req.session.isLoggedIn) {
@@ -18,6 +19,33 @@ exports.getAddProduct = (req, res, next) => {
     validationErrors: [],
   });
 };
+
+exports.getWallets = async (req,res, next) =>{
+    if( ! req.user || ! req.session.user ){
+      next();
+    }
+
+    const user = req.user ?? await UserModel.findById(req.session.user._id) ?? null;
+    const balance = user.point;
+
+    if( user ){
+      return res.render('admin/wallet', {
+        user,
+        balance
+      });
+    }
+
+    res.redirect("/login");
+}
+
+exports.loadBalance = async (req,res)=>{
+
+}
+
+exports.withdrawBalance = async (req, res)=>{
+
+}
+
 
 exports.postAddProduct = async (req, res, next) => {
   const { title, price, description } = req.body;

@@ -1,0 +1,26 @@
+<%- include("../includes/head.ejs", {pageTitle: "Load Balance"})%>
+<link rel="stylesheet" href="/css/cart.css">
+</head>
+
+<body>
+    
+    <%- include("../includes/navigation.ejs", {path: "/load-balance"})%>
+    <main>        
+        <h1 class="centered">Load Your Hack Shop Balance</h1>
+       
+        <div class="centered">
+            <form action="/initiate-load-balance" method="post">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <p>
+                    <label for="amount">Please enter the Amount to Load</label>
+                    <input type="number" name="amount" id="amount" />
+                </p>
+
+                <p>
+                    <button type="submit" class="btn">Load Balance</button>
+                </p> 
+                
+            </form>
+        </div>
+    </main>
+    <%- include("../includes/end.ejs")%>

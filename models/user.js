@@ -1,15 +1,9 @@
 const mongoose = require("mongoose");
+const TransModel = require("./transModel");
 const random = require("random-string-generator");
 // const { update } = require("./product");
 const Schema = mongoose.Schema;
-const TransactionSchema = new Schema({
-  transaction_id: {type:String, required:true},
-  value: {type:Number, required:true},
-  from:{type:String, required:true},
-  to:{type:String, required:true},
-  ref:{type:String, required:true},
-  data:{type:String, required:false, default:""}
-});
+
 const userSchema = new Schema({
   email: {
     type: String,
@@ -38,8 +32,12 @@ const userSchema = new Schema({
   point:{type:Number, default:0.00},
   currency:{type:String, default:"USD"},
   currencySymbol: {type:String, default:"$"},
-  transactions: [TransactionSchema],
-  trans_nonce: {type:Array, required:false, default:[]}
+  transactions: [{type:mongoose.Schema.Types.ObjectId, ref: "Transactions"}],//reference 
+  trans_nonce: {type:Array, required:false, default:[]},
+  withdrawn: {type:Number, default:0.00},
+  buyReference: {type:String, default:""},
+  buyAmount: {type:Number, default:0.00},
+  buyTime: {type:Number, default:0},
 });
 
 userSchema.methods.removeFromCart = function (productId) {
@@ -84,10 +82,14 @@ userSchema.methods.addToCart = function (product) {
 
     if( pignate && page ){
       let start = (page - 1 ) * per_page;
-      return this.transactions.slice(start, per_page );
+      return this.transactions.slice(start, per_page ).map((TransID)=>{
+        return TransModel.findOne({_id: TransID});
+      });
     }
 
-    return this.transactions;
+    return this.transactions.map((TransID)=> {
+      return TransModel.findOne({_id: TransID});
+    });
       
   }
 
@@ -101,20 +103,21 @@ userSchema.methods.addToCart = function (product) {
         return false;
       }
 
-      const transaction = {
-          transaction_id: random(12),
-          value: amount,
-          from: this._id,
-          to: to._id,
-          ref: ref,
-      };
+      const trans = new TransModel();
+      trans.transaction_id = random(12);
+      trans.value = amount;
+      trans.from = this._id;
+      trans.to = to._id;
+      trans.ref = ref;
+
+      trans.save();
 
       this.point -= amount;
-      this.transactions.push(transaction);
+      this.transactions.push(trans._id);
       this.save();
 
       to.point  += amount;
-      to.transactions.push(transaction);
+      to.transactions.push(trans._id);
       to.save();
 
       return true;

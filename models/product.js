@@ -17,6 +17,11 @@ const productSchema = new Schema({
     type: String,
     required: true,
   },
+  gallery: {
+    type: Schema.Types.Array,
+    require:false,
+    default: []
+  },
   publicId: {
     type: String,
     required: true,

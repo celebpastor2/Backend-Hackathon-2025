@@ -1,0 +1,27 @@
+<%- include("../includes/head.ejs", {pageTitle: "Wallet Page"})%>
+<link rel="stylesheet" href="/css/cart.css">
+</head>
+
+<body>
+    
+    <%- include("../includes/navigation.ejs", {path: "/wallet"})%>
+    <main>        
+        <h1 class="centered">Your Hack Shop Balance</h1>
+        <ul class="cart__item-list">
+            
+            <li class="cart__item" style="justify-content: center;flex-direction: column;">
+                <img src="/pictures/shopmip.png" alt=""> 
+                <h2>Balance: $ <%= balance %></h2>
+            </li>
+           
+        </ul>
+        <div class="centered">
+            <!-- <form action="/create-order" method="post">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button type="submit" class="btn">Order Now!</button>
+            </form> -->
+            <a class="btn" href="/admin/withdraw-balance">withdraw</a>
+            <a class="btn" href="/admin/load-balance">Deposit</a>
+        </div>
+    </main>
+    <%- include("../includes/end.ejs")%>

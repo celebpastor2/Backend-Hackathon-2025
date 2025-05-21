@@ -166,22 +166,22 @@ exports.getCheckout = (req, res, next) => {
       const sellersProfile = {};
       products.forEach( async (p) => {
         const seller = p.populate('user').execPopulate();
-        const isProfiled = sellersProfile[seller.__id];
+        const isProfiled = sellersProfile[seller._id];
         const  price    = parseFloat( p.quantity * p.productId.price );
         if( isProfiled ){
           isProfiled.value += price;
           isProfiled.products.push(p);
-          sellersProfile[seller.__id] = isProfiled;
+          sellersProfile[seller._id] = isProfiled;
         } else {
-          sellersProfile[seller.__id] = {
-              id: seller.__id,
+          sellersProfile[seller._id] = {
+              id: seller._id,
               value: price,
               products: [p],
               nonce: random(6)
           };
           const nonces = user.trans_nonce ?? [];
-          nonces.push(sellersProfile[seller.__id].nonce);
-          user.trans_nonce = nonces;
+          nonces.push(sellersProfile[seller._id].nonce);
+          user.trans_nonce = nonces;//security purpose
           user.save();
         }
         total += price;//total price of the product

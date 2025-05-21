@@ -19,9 +19,15 @@
             <h2>Total: $ <%= totalSum %></h2>
         </div>
         <div class="centered">
-            <button id="order-btn" class="btn btn--full">Payment &rarr;</button>
+            <h4>Current Balance: <span id="user_balance" style="cursor:pointer;">$ <%= user.point %></span></h4>
+        </div>
+        <div class="centered">
+            <button id="order-btn" class="btn btn--full">Order Now &rarr;</button>
             <script src="https://js.stripe.com/v3/"></script>
             <script>
+                document.getElementById("user_balance").addEventListener("click", function(){
+                    window.open("/load-balance", "_blank");
+                });
                 var profiles = JSON.parse( '<%= profiles %>' );
                 var user  = JSON.parse( '<%= user %>' );
                 var total = parseFloat( '<%= totalSum %>' );
@@ -32,11 +38,15 @@
                     var text = e.target.innerHTML;
                     e.target.innerText = "Purchasing...";
                    if( user.point < total){
-                    
+                    let balanceUrl = location.origin + "/load-balance";//paystack
+                    balanceUrl = new URL(balanceUrl);
+                    let balance = parseFloat( user.point ) - parseFloat(total);
+                    balanceUrl.searchParams.set("amount", balance);
                     e.target.innerText = "Balance Low";
+                    e.target.setAttribute("disabled", "disabled");
 
                     setTimeout(()=>{
-                        e.target.innerHTML = text;
+                       location.href = balanceUrl;
                     }, 5000);
                    } else {
                      for( profile in profiles ){

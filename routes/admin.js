@@ -12,6 +12,10 @@ router.get("/add-product", isAuth, adminController.getAddProduct);
 
 router.get("/products", isAuth, adminController.getProducts);
 
+router.get('/wallet', isAuth, adminController.getWallets);
+router.get('/load-balance', isAuth, adminController.loadBalance);
+router.get('/withdraw-balance', isAuth, adminController.withdrawBalance);
+
 router.post(
   "/add-product",
   [

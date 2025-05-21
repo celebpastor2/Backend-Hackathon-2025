@@ -83,7 +83,6 @@ app.use(
 
 app.use(csrfProtection);
 app.use(flash());
-
 // find current user
 app.use((req, res, next) => {
   if (!req.session.user) {
@@ -116,9 +115,13 @@ app.use(shopRoutes);
 app.use(authRoutes);
 
 app.get('/500', errorController.get500);
+app.post("/initiate-load-balance", errorController.initiateLoadBalance);
+app.get("/verify-balance/:reference", errorController.verifyLoadedBalance);
+
 app.use(errorController.get404);
 
 app.use((error, req, res, next) => {
+  console.error(error);
   res.redirect('/500');
 });
 

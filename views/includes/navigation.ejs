@@ -39,8 +39,8 @@
                         <button type="submit">Logout</button>
                     </form>
                 </li>
-                <li>
-                    <%= currentUser?.point?.toFixed(2) ?? 0.00 %>
+                <li class="main-header__item">
+                    <a href="/admin/wallet"><%= currentUser?.point?.toFixed(2) ?? 0.00 %></a>
                 </li>
                 <% } %>
             </ul>
@@ -83,6 +83,9 @@
                 <button type="submit">Logout</button>
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             </form>
+        </li>
+         <li class="mobile-nav__item">
+            <a href="/admin/load-balance" class="<%= path === '/wallet' ? 'active' : '' %>" ><%= currentUser?.point?.toFixed(2) ?? 0.00 %></a>
         </li>
         <% } %>
     </ul>
