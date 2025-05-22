@@ -50,6 +50,7 @@ const authRoutes = require('./routes/auth.js');
 const errorController = require('./controllers/error.js');
 const User = require('./models/user');
 
+
 // const accessLogStream = fs.createWriteStream(
 //   path.join(__dirname, "access.log"),
 //   { flags: "a" } // flags: a means the data will not be overwritten instead be appended
