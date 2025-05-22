@@ -1,5 +1,32 @@
-<form action="/cart" method="POST">
+
+
+<!--<form action="/cart" method="POST">
     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
     <button class="btn btn--full" type="submit"><i class="fas fa-shopping-cart"></i></button>
     <input type="hidden" name="productId" value="<%=product._id%>">
-</form>
+</form> -->
+<button id="shoppingCart" class="btn btn--full" type="button"><i class="fas fa-shopping-cart"></i></button>
+
+<script>
+ shoppingCart.addEventListener("click", async function(){
+    const url = new URL( location.origin + "/cart");
+    const options = {
+        method:"POST",
+        headers: {
+            "Content-Type":"application/json"
+        },
+        body: JSON.stringify({
+            productId: "<%=product._id%>",
+            _csrf:"<%= csrfToken %>"
+        })
+    };
+    fetch(url, options).then((resp)=>{
+        const popup = document.getElementById("addPop");
+        popup.style.display = "block";
+
+        setTimeout(function(){
+            popup.style.display = "block";
+        }, 1500);
+    });
+ });
+</script>

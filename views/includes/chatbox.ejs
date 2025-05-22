@@ -1,0 +1,33 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chatbox</title>
+  <link rel="stylesheet" href="/chatbox.css"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=chat" />
+</head>
+<body>
+  <div class="chatbox-container" id="chatbox-container">
+    <div class="chatbox-header">Live Chat <span id="close-chat">X</span></div>
+    <div class="chatbox-body" id="chat-messages">
+      <div class="bot-msg">Hi! How can I help you today?</div>
+    </div>
+    <div class="chatbox-footer">
+      <input type="text" id="chat-input" placeholder="Type a message..." />
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+  
+  <div style="display:none;" class="open chat" id="open-chat">
+	<span class="material-symbols-outlined">
+		chat
+		</span>
+  </div>
+
+  <script src="/chatbox.js">
+    
+  </script>
+</body>
+</html>

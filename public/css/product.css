@@ -5,6 +5,13 @@
   display: block;
 }
 
+.feat-product__wrapper {
+  background-image: url("../hero.jpg");
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
 button {
   border: none;
   background-color: var(--color-primary);

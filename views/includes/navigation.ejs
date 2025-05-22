@@ -3,14 +3,14 @@
     <header class="main-header">
 
         <button id="side-menu-toggle">Menu</button>
-        <a href="/" class="logo">SHOPMIP</a>
+        <a href="/" class="logo">PLAYVERSE</a>
         <nav class="main-header__nav">
             <ul class="main-header__item-list middle">
                 <!-- <li class="main-header__item"><a class="<%= path==='/' ? 'active' : '' %>" href="/">Shop</a></li>
             <li class="main-header__item"><a class="<%= path==='/products' ? 'active' : '' %>"
                     href="/products">Products</a></li> -->
                 <% if(isAuthenticated) { %>
-                <li class="main-header__item"><a class="<%= path==='/cart' ? 'active' : '' %>" href="/cart">Cart</a>
+                <li class="main-header__item"><a class="<%= path==='/cart' ? 'active' : '' %>" href="/cart">Cart<span class="cart __badge" id="cartBadge"><%= currentUser.cart.items.length; %></span></a>
                 </li>
                 <li class="main-header__item"><a class="<%= path==='/orders' ? 'active' : '' %>"
                         href="/orders">Orders</a>

@@ -5,14 +5,15 @@
 <body>
     <%- include("../includes/navigation.ejs")%>
     <main>
-        <% if (products.length > 0) { %>
+        <% if (products.length > 0) {%>
         <h1 class="centered">YOUR CART</h1>
         <ul class="cart__item-list">
             <% products.forEach(p => { %>
+                <% if( ! p.productId ) return; %>
             <li class="cart__item">
                 <img src="<%= p.productId.imageUrl %>" alt="">
                 <h1><%= p.productId.title %></h1>
-                <h2>Quantity: <%= p.quantity %></h2>
+                <h2>Quantity: <span class="increase" data-product-id="<%= p.productId._id %>">-</span><input type="number" value="<%= p.quantity %>" class="increase"><span class="reduce" data-product-id="<%= p.productId._id %>">+</span></span></h2>
                 <form action="/cart-delete-item" method="POST">
                     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     <input type="hidden" value="<%= p.productId._id %>" name="productId">
@@ -28,9 +29,54 @@
             </form> -->
             <a class="btn" href="/checkout">Order Now</a>
         </div>
-
+    
         <% }else{ %>
         <h1>No Products</h1>
         <%}%>
     </main>
+    <script>
+        const increase = document.querySelectorAll(".increase");
+        const reduce = document.querySelectorAll(".reduce");
+
+        Array.from(increase).map((el)=>{
+            el.addEventListener("click", function(){
+                const url = new URL( location.origin + "/cart");
+                const options = {
+                    method:"POST",
+                    headers: {
+                        "Content-Type":"application/json"
+                    },
+                    body: JSON.stringify({
+                        productId: this.getAttribute("data-product-id"),
+                        _csrf:"<%= csrfToken %>"
+                    })
+                };
+                fetch(url, options).then((resp)=>{
+                   const input = this.parentElement.querySelector("input");
+                   const value = input.value;
+                   input.value = value + 1;
+                });
+            });
+        });
+        Array.from(reduce).map((el)=>{
+            el.addEventListener("click", function(){
+                const url = new URL( location.origin + "/remove-cart-quantity");
+                const options = {
+                    method:"POST",
+                    headers: {
+                        "Content-Type":"application/json"
+                    },
+                    body: JSON.stringify({
+                        productId: this.getAttribute("data-product-id"),
+                        _csrf:"<%= csrfToken %>"
+                    })
+                };
+                fetch(url, options).then((resp)=>{
+                   const input = this.parentElement.querySelector("input");
+                   const value = input.value;
+                   input.value = value - 1;
+                });
+            });
+        });
+    </script>
     <%- include("../includes/end.ejs")%>
