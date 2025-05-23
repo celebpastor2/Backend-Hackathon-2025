@@ -90,3 +90,141 @@ body {
 	cursor:pointer;
 	padding-bottom:10px;
 }
+/* chatbox.css */
+.chatbox-container {
+  position: fixed;
+  bottom: 90px;
+  right: 20px;
+  width: 300px;
+  height: 400px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  display: none; /* Hidden by default */
+  flex-direction: column;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.chatbox-header {
+  background-color: var(--color-primary, #2c3e50);
+  color: white;
+  padding: 10px 15px;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#close-chat {
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.chatbox-body {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+  background-color: #f5f5f5;
+}
+
+.bot-msg, .user-msg {
+  padding: 8px 12px;
+  border-radius: 15px;
+  margin-bottom: 10px;
+  max-width: 80%;
+  word-wrap: break-word;
+}
+
+.bot-msg {
+  background-color: #e0e0e0;
+  align-self: flex-start;
+}
+
+.user-msg {
+  background-color: var(--color-primary, #2c3e50);
+  color: white;
+  margin-left: auto;
+  align-self: flex-end;
+}
+
+.chatbox-footer {
+  display: flex;
+  padding: 10px;
+  border-top: 1px solid #e0e0e0;
+  background-color: white;
+}
+
+.chatbox-footer input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  margin-right: 10px;
+}
+
+.chatbox-footer button {
+  background-color: var(--color-primary, #2c3e50);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 15px;
+  cursor: pointer;
+}
+
+/* Chat button styles */
+.open-chat {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: var(--color-primary, #2c3e50);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  z-index: 999;
+  transition: transform 0.3s ease;
+}
+
+.open-chat:hover {
+  transform: scale(1.1);
+}
+
+.open-chat .material-symbols-outlined {
+  font-size: 28px;
+}
+
+/* Animation for chat opening */
+@keyframes slideIn {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.chatbox-container.active {
+  display: flex;
+  animation: slideIn 0.3s forwards;
+}
+/* Add this to your chatbox.css file */
+.open-chat {
+  background-color: #1e88e5; /* Material Blue */
+  color: white;
+  /* Rest of your existing styles */
+}
+
+/* If you want to add a nice hover effect */
+.open-chat:hover {
+  background-color: #2e7d32; /* Darker blue on hover */
+  transform: scale(1.1);
+}

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +8,8 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=chat" />
 </head>
 <body>
-  <div class="chatbox-container" id="chatbox-container">
+  <!-- Chat container - hidden by default -->
+  <div class="chatbox-container" id="chatbox-container" style="display: none;">
     <div class="chatbox-header">Live Chat <span id="close-chat">X</span></div>
     <div class="chatbox-body" id="chat-messages">
       <div class="bot-msg">Hi! How can I help you today?</div>
@@ -20,14 +20,11 @@
     </div>
   </div>
   
-  <div style="display:none;" class="open chat" id="open-chat">
-	<span class="material-symbols-outlined">
-		chat
-		</span>
+  <!-- Chat button - visible by default -->
+  <div class="open-chat" id="open-chat">
+    <span class="material-symbols-outlined">chat</span>
   </div>
 
-  <script src="/chatbox.js">
-    
-  </script>
+  <script src="/chatbox.js"></script>
 </body>
 </html>

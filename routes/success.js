@@ -2,10 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/', (req, res) => {
-  res.render('shop/success', {
-    pageTitle: 'Success',
-    path: '/success'
-  });
+  res.render('success', { pageTitle: 'Success' });
 });
 
 module.exports = router;

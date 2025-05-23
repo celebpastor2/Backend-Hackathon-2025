@@ -1,29 +1,183 @@
-<%- include("../includes/head.ejs")%>
+<%- include('../includes/head.ejs') %>
 <link rel="stylesheet" href="/css/orders.css">
 </head>
 
 <body>
-    <%- include("../includes/navigation.ejs")%>
+    <%- include('../includes/navigation.ejs') %>
     <main>
-        <% if (orders.length<=0) { %>
-        <h1>Nothing here!</h1>
-        <% }else{ %>
-        <ul class="orders">
-            <% orders.forEach(order => { %>
-            <li class="orders__item centered">
-                <h1 class="order_id">Order Id: # <%=order._id%></h1>
-                <ul class="orders__products">
-                    <% order.products.forEach(p=>{ %>
-                    <li class="orders__products-item"><%=p.product.title%> ( <%=p.quantity%> )
+        <% if (orders.length <= 0) { %>
+            <div class="centered">
+                <h1>No Orders Found</h1>
+                <p>You haven't placed any orders yet.</p>
+                <a href="/products" class="btn">Start Shopping</a>
+            </div>
+        <% } else { %>
+            <h1 class="centered">Your Orders</h1>
+            <ul class="orders">
+                <% orders.forEach(order => { %>
+                    <li class="orders__item">
+                        <h2>Order - # <%= order._id %></h2>
+                        <p class="order-date">
+                            <strong>Date:</strong> 
+                            <%= order.date ? new Date(order.date).toLocaleDateString('en-NG') : new Date().toLocaleDateString('en-NG') %>
+                        </p>
+                        
+                        <% if (order.paymentReference) { %>
+                            <p class="order-reference">
+                                <strong>Payment Reference:</strong> <%= order.paymentReference %>
+                            </p>
+                        <% } %>
+                        
+                        <ul class="orders__products">
+                            <% order.products.forEach(p => { %>
+                                <li class="orders__products-item">
+                                    <div class="product-info">
+                                        <span class="product-title"><%= p.product.title %></span>
+                                        <span class="product-quantity">Qty: <%= p.quantity %></span>
+                                        <span class="product-price">₦<%= (p.product.price * p.quantity).toFixed(2) %></span>
+                                    </div>
+                                </li>
+                            <% }); %>
+                        </ul>
+                        
+                        <div class="order-total">
+                            <strong>Total:</strong> 
+                            ₦<%= order.totalAmount ? order.totalAmount.toFixed(2) : order.products.reduce((total, p) => total + p.product.price * p.quantity, 0).toFixed(2) %>
+                        </div>
+                        
+                        <div class="orders__actions">
+                            <a href="/orders/<%= order._id %>/invoice" class="btn" target="_blank">
+                                <i class="fas fa-download"></i> Download Invoice
+                            </a>
+                        </div>
                     </li>
-                    <%});%>
-                </ul>
-                <hr>
-                <a href="/orders/<%=order._id%>">Download Invoice</a>
-            </li>
-            <% }) %>
-        </ul>
+                <% }); %>
+            </ul>
         <% } %>
     </main>
-    <%- include("../includes/end.ejs")%>
-    <%- include("../includes/footer.ejs") %>
+    
+    <style>
+        .orders {
+            list-style: none;
+            padding: 0;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .orders__item {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+        }
+        
+        .orders__item h2 {
+            color: var(--color-primary);
+            margin-top: 0;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.5rem;
+        }
+        
+        .order-date, .order-reference {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .orders__products {
+            list-style: none;
+            padding: 0;
+            margin: 1.5rem 0;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            padding: 1rem 0;
+        }
+        
+        .orders__products-item {
+            padding: 0.5rem 0;
+            border-bottom: 1px dashed #eee;
+        }
+        
+        .orders__products-item:last-child {
+            border-bottom: none;
+        }
+        
+        .product-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .product-title {
+            flex: 1;
+            font-weight: 500;
+        }
+        
+        .product-quantity {
+            color: #666;
+            margin: 0 1rem;
+        }
+        
+        .product-price {
+            font-weight: bold;
+            color: var(--color-primary);
+        }
+        
+        .order-total {
+            text-align: right;
+            font-size: 1.2rem;
+            margin: 1rem 0;
+        }
+        
+        .orders__actions {
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: var(--color-primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background-color: #1a252f;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .centered {
+            text-align: center;
+            margin: 3rem 0;
+        }
+        
+        @media (max-width: 768px) {
+            .product-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.25rem;
+            }
+            
+            .product-quantity, .product-price {
+                margin: 0;
+            }
+            
+            .orders__actions {
+                justify-content: center;
+            }
+        }
+    </style>
+    
+    <%- include('../includes/end.ejs') %>
+</body>
+</html>

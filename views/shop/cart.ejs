@@ -1,83 +1,555 @@
 <%- include("../includes/head.ejs")%>
 <link rel="stylesheet" href="/css/cart.css">
+<style>
+/* Additional cart page styles */
+.cart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.back-to-home {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: #f8f9fa;
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+    padding: 0.75rem 1.5rem;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    font-weight: bold;
+}
+
+.back-to-home:hover {
+    background-color: var(--color-primary);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.cart-summary {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 2rem;
+    margin-top: 2rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.cart-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+    padding: 1.5rem 0;
+    border-top: 2px solid #eee;
+    border-bottom: 2px solid #eee;
+    color: var(--color-primary);
+}
+
+.order-now-btn {
+    display: block;
+    width: 100%;
+    background-color: var(--color-primary);
+    color: white;
+    padding: 1.2rem 2rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    margin-top: 1rem;
+}
+
+.order-now-btn:hover {
+    background-color: #1a252f;
+    transform: translateY(-2px);
+    color: white;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.cart__item {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+.cart__item img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+.cart__item-content {
+    flex: 1;
+}
+
+.cart__item h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.3rem;
+    color: var(--color-primary);
+}
+
+.product-price {
+    color: #666;
+    margin: 0.5rem 0;
+    font-size: 1.1rem;
+}
+
+.product-subtotal {
+    font-weight: bold;
+    margin: 0.5rem 0;
+    font-size: 1.1rem;
+    color: var(--color-primary);
+}
+
+.cart__item h2 {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1rem 0;
+    font-size: 1rem;
+}
+
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.quantity-btn {
+    width: 35px;
+    height: 35px;
+    border: 1px solid #ddd;
+    background-color: #f8f9fa;
+    cursor: pointer;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    font-size: 1.2rem;
+}
+
+.quantity-btn:hover {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+.quantity-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.quantity-input {
+    width: 60px;
+    height: 35px;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin: 0 0.5rem;
+    font-weight: bold;
+}
+
+.cart__item form {
+    margin-left: 1rem;
+}
+
+.empty-cart {
+    text-align: center;
+    padding: 3rem 0;
+}
+
+.empty-cart-icon {
+    font-size: 4rem;
+    color: #ccc;
+    margin-bottom: 1rem;
+}
+
+.empty-cart h1 {
+    color: var(--color-primary);
+    margin-bottom: 1rem;
+}
+
+.empty-cart p {
+    color: #666;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+}
+
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 12px 20px;
+    border-radius: 4px;
+    color: white;
+    font-weight: bold;
+    z-index: 1000;
+    transform: translateY(-100px);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.message.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.message.success {
+    background-color: #4CAF50;
+}
+
+.message.error {
+    background-color: #F44336;
+}
+
+@media (max-width: 768px) {
+    .cart-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .back-to-home {
+        justify-content: center;
+    }
+    
+    .cart__item {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .cart__item img {
+        width: 100px;
+        height: 100px;
+        align-self: center;
+    }
+    
+    .cart__item form {
+        margin-left: 0;
+        margin-top: 1rem;
+    }
+    
+    .cart-total {
+        font-size: 1.3rem;
+    }
+    
+    .order-now-btn {
+        font-size: 1.1rem;
+        padding: 1rem 1.5rem;
+    }
+}
+</style>
 </head>
 
 <body>
     <%- include("../includes/navigation.ejs")%>
     <main>
+        <div class="cart-header">
+            <h1 class="centered">YOUR CART</h1>
+            <a href="/" class="back-to-home">
+                <i class="fas fa-arrow-left"></i>
+                Continue Shopping
+            </a>
+        </div>
+
         <% if (products.length > 0) {%>
-        <h1 class="centered">YOUR CART</h1>
         <ul class="cart__item-list">
+            <% let totalPrice = 0; %>
             <% products.forEach(p => { %>
                 <% if( ! p.productId ) return; %>
-            <li class="cart__item">
-                <img src="<%= p.productId.imageUrl %>" alt="">
-                <h1><%= p.productId.title %></h1>
-                <h2>Quantity: <span class="increase" data-product-id="<%= p.productId._id %>">-</span><input type="number" value="<%= p.quantity %>" class="increase"><span class="reduce" data-product-id="<%= p.productId._id %>">+</span></span></h2>
+                <% const itemTotal = p.productId.price * p.quantity; %>
+                <% totalPrice += itemTotal; %>
+            <li class="cart__item" data-product-id="<%= p.productId._id %>">
+                <img src="<%= p.productId.imageUrl %>" alt="<%= p.productId.title %>">
+                <div class="cart__item-content">
+                    <h1><%= p.productId.title %></h1>
+                    <div class="product-price">Price: ₦<%= p.productId.price.toFixed(2) %></div>
+                    <div class="product-subtotal" data-price="<%= p.productId.price %>">
+                        Subtotal: ₦<span class="subtotal-amount"><%= itemTotal.toFixed(2) %></span>
+                    </div>
+                    <h2>
+                        Quantity: 
+                        <div class="quantity-controls">
+                            <button class="quantity-btn reduce" data-product-id="<%= p.productId._id %>" type="button">-</button>
+                            <input type="number" value="<%= p.quantity %>" class="quantity-input" readonly>
+                            <button class="quantity-btn increase" data-product-id="<%= p.productId._id %>" type="button">+</button>
+                        </div>
+                    </h2>
+                </div>
                 <form action="/cart-delete-item" method="POST">
                     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     <input type="hidden" value="<%= p.productId._id %>" name="productId">
-                    <button type="submit" class="btn danger"><i class="fas fa-trash"></i></button>
+                    <button type="submit" class="btn danger" title="Remove item">
+                        <i class="fas fa-trash"></i>
+                    </button>
                 </form>
             </li>
             <% }) %>
         </ul>
-        <div class="centered">
-            <!-- <form action="/create-order" method="post">
-                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                <button type="submit" class="btn">Order Now!</button>
-            </form> -->
-            <a class="btn" href="/checkout">Order Now</a>
+
+        <div class="cart-summary">
+            <div class="cart-total">
+                <span>Total Amount:</span>
+                <span id="total-amount">₦<%= totalPrice.toFixed(2) %></span>
+            </div>
+            <a class="order-now-btn" href="/checkout">
+                <i class="fas fa-credit-card"></i>
+                Order Now - Proceed to Checkout
+            </a>
         </div>
     
         <% }else{ %>
-        <h1>No Products</h1>
+        <div class="empty-cart">
+            <div class="empty-cart-icon">
+                <i class="fas fa-shopping-cart"></i>
+            </div>
+            <h1>Your Cart is Empty</h1>
+            <p>Looks like you haven't added any products to your cart yet.</p>
+            <a href="/" class="back-to-home">
+                <i class="fas fa-arrow-left"></i>
+                Start Shopping
+            </a>
+        </div>
         <%}%>
     </main>
+    
     <script>
         const increase = document.querySelectorAll(".increase");
         const reduce = document.querySelectorAll(".reduce");
 
-        Array.from(increase).map((el)=>{
-            el.addEventListener("click", function(){
-                const url = new URL( location.origin + "/cart");
+        // Function to show messages
+        function showMessage(message, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.textContent = message;
+            
+            document.body.appendChild(messageDiv);
+            
+            setTimeout(() => {
+                messageDiv.classList.add('show');
+            }, 10);
+            
+            setTimeout(() => {
+                messageDiv.classList.remove('show');
+                setTimeout(() => {
+                    if (document.body.contains(messageDiv)) {
+                        document.body.removeChild(messageDiv);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // Function to disable buttons during request
+        function setButtonsLoading(productId, loading) {
+            const cartItem = document.querySelector(`[data-product-id="${productId}"]`);
+            if (cartItem) {
+                const buttons = cartItem.querySelectorAll('.quantity-btn');
+                buttons.forEach(btn => {
+                    btn.disabled = loading;
+                });
+                if (loading) {
+                    cartItem.classList.add('loading');
+                } else {
+                    cartItem.classList.remove('loading');
+                }
+            }
+        }
+
+        // Function to update subtotal and total
+        function updateTotals() {
+            let total = 0;
+            document.querySelectorAll('.cart__item').forEach(item => {
+                const quantity = parseInt(item.querySelector('.quantity-input').value);
+                const price = parseFloat(item.querySelector('.product-subtotal').dataset.price);
+                const subtotal = quantity * price;
+                
+                const subtotalElement = item.querySelector('.subtotal-amount');
+                if (subtotalElement) {
+                    subtotalElement.textContent = subtotal.toFixed(2);
+                }
+                total += subtotal;
+            });
+            
+            const totalElement = document.getElementById('total-amount');
+            if (totalElement) {
+                totalElement.textContent = '₦' + total.toFixed(2);
+            }
+        }
+
+        // Replace the increase event listener in your cart.ejs file
+Array.from(increase).forEach(el => {
+  el.addEventListener("click", function() {
+    const productId = this.getAttribute("data-product-id");
+    setButtonsLoading(productId, true);
+    
+    const url = new URL(location.origin + "/cart");
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "CSRF-Token": "<%= csrfToken %>"
+      },
+      body: JSON.stringify({
+        productId: productId
+      })
+    };
+    
+    fetch(url, options)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          return response.json();
+        } else {
+          return { success: true };
+        }
+      })
+      .then(data => {
+        const input = this.parentElement.querySelector("input");
+        const currentValue = parseInt(input.value);
+        const newValue = currentValue + 1;
+        input.value = newValue;
+        
+        // Update subtotal for this item
+        const cartItem = this.closest('.cart__item');
+        const price = parseFloat(cartItem.querySelector('.product-subtotal').dataset.price);
+        const newSubtotal = price * newValue;
+        cartItem.querySelector('.subtotal-amount').textContent = newSubtotal.toFixed(2);
+        
+        // Update total price
+        updateTotals();
+        
+        // Update cart count
+        updateCartCount();
+        
+        setButtonsLoading(productId, false);
+        showMessage('Quantity updated successfully', 'success');
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        showMessage('Failed to update quantity. Please try again.', 'error');
+        setButtonsLoading(productId, false);
+      });
+  });
+});
+
+        // Decrease quantity
+        Array.from(reduce).forEach(el => {
+            el.addEventListener("click", function() {
+                const productId = this.getAttribute("data-product-id");
+                const input = this.parentElement.querySelector("input");
+                const currentValue = parseInt(input.value);
+                
+                if (currentValue <= 1) {
+                    if (confirm("Remove this item from your cart?")) {
+                        const form = this.closest('.cart__item').querySelector('form');
+                        form.submit();
+                    }
+                    return;
+                }
+                
+                setButtonsLoading(productId, true);
+                
+                const url = new URL(location.origin + "/reduce-cart-quantity");
                 const options = {
-                    method:"POST",
+                    method: "POST",
                     headers: {
-                        "Content-Type":"application/json"
+                        "Content-Type": "application/json",
+                        "CSRF-Token": "<%= csrfToken %>"
                     },
                     body: JSON.stringify({
-                        productId: this.getAttribute("data-product-id"),
-                        _csrf:"<%= csrfToken %>"
+                        productId: productId
                     })
                 };
-                fetch(url, options).then((resp)=>{
-                   const input = this.parentElement.querySelector("input");
-                   const value = input.value;
-                   input.value = value + 1;
-                });
-            });
-        });
-        Array.from(reduce).map((el)=>{
-            el.addEventListener("click", function(){
-                const url = new URL( location.origin + "/remove-cart-quantity");
-                const options = {
-                    method:"POST",
-                    headers: {
-                        "Content-Type":"application/json"
-                    },
-                    body: JSON.stringify({
-                        productId: this.getAttribute("data-product-id"),
-                        _csrf:"<%= csrfToken %>"
+                
+                fetch(url, options)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to update quantity');
+                        }
+                        const contentType = response.headers.get('content-type');
+                        if (contentType && contentType.includes('application/json')) {
+                            return response.json();
+                        } else {
+                            return { success: true };
+                        }
                     })
-                };
-                fetch(url, options).then((resp)=>{
-                   const input = this.parentElement.querySelector("input");
-                   const value = input.value;
-                   input.value = value - 1;
-                });
+                    .then(data => {
+                        input.value = currentValue - 1;
+                        
+                        // Update totals
+                        updateTotals();
+                        setButtonsLoading(productId, false);
+                        showMessage('Quantity updated successfully', 'success');
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showMessage('Failed to update quantity. Please try again.', 'error');
+                        setButtonsLoading(productId, false);
+                    });
             });
         });
+
+        // Add this function to your cart.ejs script section
+function updateCartCount() {
+  fetch('/cart-count')
+    .then(response => response.json())
+    .then(data => {
+      // Update all possible cart count elements
+      const cartBadges = document.querySelectorAll(".cart__badge, .cart-badge, #cart-count, .cart-floating__badge");
+      cartBadges.forEach(badge => {
+        if (badge) {
+          badge.textContent = data.count;
+          
+          // Make badge visible if count > 0
+          if (data.count > 0) {
+            badge.style.display = 'flex';
+            badge.style.visibility = 'visible';
+            badge.style.opacity = '1';
+          } else {
+            badge.style.display = 'none';
+          }
+        }
+      });
+    })
+    .catch(error => {
+      console.error("Error fetching cart count:", error);
+    });
+}
+
+        // Update cart count on page load
+        updateCartCount();
     </script>
     <%- include("../includes/end.ejs")%>
     <%- include("../includes/footer.ejs") %>
+</body>
+</html>

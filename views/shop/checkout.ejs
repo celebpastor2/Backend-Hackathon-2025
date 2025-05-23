@@ -1,98 +1,413 @@
 <%- include("../includes/head.ejs")%>
 <link rel="stylesheet" href="/css/cart.css">
+<style>
+/* Checkout page styles */
+.checkout-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.checkout-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.back-to-cart {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: #f8f9fa;
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+    padding: 0.75rem 1.5rem;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    font-weight: bold;
+}
+
+.back-to-cart:hover {
+    background-color: var(--color-primary);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.checkout-grid {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 2rem;
+}
+
+.checkout-items, .order-summary {
+    background-color: white;
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.checkout-items h3, .order-summary h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 1rem;
+}
+
+.checkout-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid #f0f0f0;
+    gap: 1rem;
+}
+
+.checkout-item:last-child {
+    border-bottom: none;
+}
+
+.checkout-item-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+    border: 1px solid #eee;
+}
+
+.checkout-item-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.checkout-item-title {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    font-size: 0.95rem;
+    color: var(--color-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.checkout-item-price {
+    color: #666;
+    font-size: 0.85rem;
+    margin-bottom: 0.25rem;
+}
+
+.checkout-item-quantity {
+    font-weight: 600;
+    color: var(--color-primary);
+    font-size: 0.9rem;
+    text-align: right;
+    min-width: 80px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 0.95rem;
+}
+
+.summary-row.total {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: var(--color-primary);
+    border-bottom: 2px solid #f0f0f0;
+    margin-bottom: 1rem;
+    padding: 1rem 0;
+}
+
+.user-balance {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    margin: 1rem 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid #e9ecef;
+}
+
+.user-balance:hover {
+    background-color: #e9ecef;
+    transform: translateY(-1px);
+}
+
+.balance-amount {
+    font-weight: bold;
+    color: var(--color-primary);
+}
+
+.balance-warning {
+    background-color: #fff3cd;
+    color: #856404;
+    padding: 1rem;
+    border-radius: 6px;
+    margin: 1rem 0;
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid #ffeaa7;
+}
+
+.balance-warning.show {
+    display: flex;
+}
+
+.order-btn {
+    display: block;
+    width: 100%;
+    background-color: var(--color-primary);
+    color: white;
+    padding: 1.2rem 2rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    margin-top: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    text-decoration: none;
+}
+
+.order-btn:hover {
+    background-color: #1a252f;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    color: white;
+}
+
+.order-btn:active {
+    transform: translateY(0);
+}
+
+.order-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+@media (max-width: 768px) {
+    .checkout-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .checkout-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .back-to-cart {
+        justify-content: center;
+    }
+    
+    .checkout-item {
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+    
+    .checkout-item-image {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .checkout-item-title {
+        white-space: normal;
+        overflow: visible;
+        text-overflow: initial;
+    }
+    
+    .checkout-item-quantity {
+        text-align: left;
+        min-width: auto;
+    }
+}
+</style>
 </head>
 
 <body>
     <%- include("../includes/navigation.ejs")%>
-    <main>
-        <h1 class="centered">CHECKOUT</h1>
-        <ul class="cart__item-list">
-            <% products.forEach(p => { %>
-            <li class="cart__item">
-                <h1><%= p.productId.title %></h1>
-                <h2>Quantity: <%= p.quantity %></h2>
-
-            </li>
-            <% }) %>
-        </ul>
-        <div class="centered">
-            <h2>Total: $ <%= totalSum %></h2>
+    <main class="checkout-container">
+        <div class="checkout-header">
+            <h1 class="centered">CHECKOUT</h1>
+            <a href="/cart" class="back-to-cart">
+                <i class="fas fa-arrow-left"></i>
+                Back to Cart
+            </a>
         </div>
-        <div class="centered">
-            <h4>Current Balance: <span id="user_balance" style="cursor:pointer;">$ <%= user.point %></span></h4>
-        </div>
-        <div class="centered">
-            <button id="order-btn" class="btn btn--full">Order Now &rarr;</button>
-            <script src="https://js.stripe.com/v3/"></script>
-            <script>
-                document.getElementById("user_balance").addEventListener("click", function(){
-                    window.open("/load-balance", "_blank");
-                });
-                var profiles = JSON.parse( '<%= profiles %>' );
-                var user  = JSON.parse( '<%= user %>' );
-                var total = parseFloat( '<%= totalSum %>' );
-                var success_url = '<%= success_url %>';
-                var cancel_url = '<%= cancel_url %>';                
-                var orderBtn = document.getElementById("order-btn");
-                orderBtn.addEventListener("click", (e) => {
-                    var text = e.target.innerHTML;
-                    e.target.innerText = "Purchasing...";
-                   if( user.point < total){
-                    let balanceUrl = location.origin + "/load-balance";//paystack
-                    balanceUrl = new URL(balanceUrl);
-                    let balance = parseFloat( user.point ) - parseFloat(total);
-                    balanceUrl.searchParams.set("amount", balance);
-                    e.target.innerText = "Balance Low";
-                    e.target.setAttribute("disabled", "disabled");
 
-                    setTimeout(()=>{
-                       location.href = balanceUrl;
-                    }, 5000);
-                   } else {
-                     for( profile in profiles ){
-                        const sellID = profile.id;
-                        const headers = new Headers();
-                        headers.append("Content-Type", "application/json");
-                        const body = {
-                            seller_id: sellID,
-                            amount: profile.value,
-                            nonce: profile.nonce,
-                            buyer: user.__id
-                        };
+        <div class="checkout-grid">
+            <!-- Checkout Items -->
+            <div class="checkout-items">
+                <h3><i class="fas fa-shopping-bag"></i> Order Items</h3>
+                
+                <% products.forEach(p => { %>
+                    <% if(!p.productId) return; %>
+                    <div class="checkout-item">
+                        <img src="<%= p.productId.imageUrl %>" alt="<%= p.productId.title %>" class="checkout-item-image">
+                        <div class="checkout-item-details">
+                            <div class="checkout-item-title"><%= p.productId.title %></div>
+                            <div class="checkout-item-price">₦<%= (p.productId.price || 0).toFixed(2) %> each</div>
+                        </div>
+                        <div class="checkout-item-quantity">
+                            Qty: <%= p.quantity %>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
 
-
-                        fetch("/bill-user-product", {
-                            method:"POST",
-                            headers,
-                            body
-                        }).then(resp => resp.json()).then(result =>{
-                            if( result.success){
-                                delete profiles[sellID];
-                            }
-                        }).catch(console.error);
-                     }
-
-                     setTimeout(()=>{
-                        if( Object.keys(profiles).length == 0 ){
-                            let text = e.target.innerHTML;
-                            e.target.innerText = "Purchase Successful";
-
-                            setTimeout(()=>{
-                                location.href = success_url;
-                            },10000);
-                        } else {
-                            let text = e.target.innerHTML;
-                            e.target.innerText = "Purchase Unsuccessful";
-
-                            setTimeout(()=>{
-                                location.href = cancel_url;
-                            },10000);
-                        }
-                     }, 15000);
-                   }                                       
-                })
-            </script>
+            <!-- Order Summary -->
+            <div class="order-summary">
+                <h3><i class="fas fa-receipt"></i> Order Summary</h3>
+                
+                <div class="summary-row">
+                    <span>Subtotal:</span>
+                    <span>₦<%= (totalSum || 0).toFixed(2) %></span>
+                </div>
+                
+                <div class="summary-row">
+                    <span>Shipping:</span>
+                    <span>Free</span>
+                </div>
+                
+                <div class="summary-row total">
+                    <span>Total:</span>
+                    <span>₦<%= (totalSum || 0).toFixed(2) %></span>
+                </div>
+                
+                <div class="user-balance" title="Click to add funds">
+                    <span>Your Balance:</span>
+                    <span id="user_balance" class="balance-amount">
+                        ₦<%= currentUser && currentUser.point ? currentUser.point.toFixed(2) : '0.00' %>
+                    </span>
+                </div>
+                
+                <div id="balance-warning" class="balance-warning">
+                    <i class="fas fa-exclamation-circle"></i>
+                    Your balance is insufficient. Click on your balance to add funds.
+                </div>
+                
+                <!-- Paystack Payment Button -->
+                <button id="paystack-button" class="order-btn">
+                    <i class="fas fa-credit-card"></i>
+                    Pay with Paystack
+                </button>
+            </div>
         </div>
     </main>
+    
+    <!-- Include Paystack JS -->
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+    
+    <script>
+        document.getElementById("user_balance").addEventListener("click", function() {
+            window.open("/load-balance", "_blank");
+        });
+        
+        // Get values directly from the DOM
+        var total = parseFloat('<%= totalSum || 0 %>');
+        var userBalance = parseFloat(document.getElementById("user_balance").innerText.replace('₦', ''));
+        var userEmail = '<%= currentUser.email %>';
+        
+        var paystackButton = document.getElementById("paystack-button");
+        var balanceWarning = document.getElementById("balance-warning");
+        
+        // Check balance on page load
+        if (userBalance < total) {
+            balanceWarning.classList.add("show");
+        }
+        
+        // Initialize Paystack payment
+        paystackButton.addEventListener("click", function(e) {
+            e.preventDefault();
+            
+            console.log('=== PAYMENT ATTEMPT ===');
+            console.log('PaystackPop available:', typeof PaystackPop !== 'undefined');
+            
+            // Check if Paystack is loaded
+            if (typeof PaystackPop === 'undefined') {
+                alert('Payment system not loaded. Please refresh the page and try again.');
+                return;
+            }
+            
+            // Convert total to the smallest currency unit (kobo for NGN)
+            var amount = Math.round(total * 100);
+            
+            // Validate amount
+            if (amount <= 0) {
+                alert('Invalid amount. Please check your cart.');
+                return;
+            }
+            
+            // Validate email
+            if (!userEmail || userEmail.trim() === '') {
+                alert('Please make sure you are logged in.');
+                return;
+            }
+            
+            console.log('Payment details:', {
+                amount: amount,
+                email: userEmail,
+                total: total,
+                currency: 'NGN'
+            });
+            
+            try {
+                var handler = PaystackPop.setup({
+                    key: 'pk_test_83b2a60512016193391fa046a75b1f13adb474af',
+                    email: userEmail,
+                    amount: amount,
+                    currency: 'NGN',
+                    ref: 'ORDER_' + Math.floor((Math.random() * 1000000000) + 1),
+                    metadata: {
+                        custom_fields: [
+                            {
+                                display_name: "Cart Total",
+                                variable_name: "cart_total",
+                                value: total
+                            }
+                        ]
+                    },
+                    callback: function(response) {
+                        console.log('Payment successful:', response);
+                        alert('Payment successful! Redirecting...');
+                        window.location.href = '/checkout/success?reference=' + response.reference;
+                    },
+                    onClose: function() {
+                        console.log('Payment window closed.');
+                    }
+                });
+                
+                console.log('Opening Paystack iframe...');
+                handler.openIframe();
+                
+            } catch (error) {
+                console.error('Error setting up payment:', error);
+                alert('Could not start payment: ' + error.message);
+            }
+        });
+    </script>
+    
     <%- include("../includes/end.ejs")%>
-    <%- include("../includes/footer.ejs") %>
+    <% if (typeof include !== 'undefined' && include.footer) { %>
+        <%- include("../includes/footer.ejs") %>
+    <% } %>
+</body>
+</html>

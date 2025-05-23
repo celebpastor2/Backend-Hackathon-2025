@@ -1,51 +1,69 @@
-<%- include("../includes/head.ejs")%>
+<%- include("../includes/head.ejs")%> 
 <link rel="stylesheet" href="/css/product.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body>
     <%- include("../includes/navigation.ejs")%>
+
     <div class="feat-product__wrapper">
-        <div class="featured-product">
-            <div class="featured-product__details">
-                <img class="heroLogo" src="hero.jpg" alt="ps5 logo">
-                <h1>The Future Of Gaming</h1>
-                <a class="buyNow" href="/products/specials/ps5">BUY NOW</a>
+        <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <% prods.slice(0, 6).forEach((product, index) => { %>
+                    <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
+                        <a href="/products/<%= product._id %>">
+                            <img src="<%= product.imageUrl %>" class="d-block w-100" alt="<%= product.title %>">
+                            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-2">
+                                <h5><%= product.title %></h5>
+                                <p>₦<%= product.price.toFixed(2) %></p>
+                            </div>
+                        </a>
+                    </div>
+                <% }) %>
             </div>
-            <!--<img class="heroImg" src="hero.jpg" alt=""> -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+            </button>
         </div>
     </div>
+
     <main>
         <% if(prods.length > 0){ %>
         <h1 class="centered">Popular</h1>
         <div class="grid">
             <% for(let product of prods){ %>
             <article class="card product-item">
-                <!-- <header class="card__header">
-                    <h1 class="product__title"><%= product.title %></h1>
-                </header> -->
-
                 <a href="/products/<%= product._id %>" class="test__link"> <span></span> </a>
-
-
                 <div class="card__image"><img src="<%= product.imageUrl %>" alt="<%= product.title %>" /></div>
-
                 <div class="card__content">
                     <p class="product__title"><%= product.title %></p>
-                    <h3 class="product__price">$ <%= product.price %></h3>
+                    <p class="product__price">₦<%= product.price.toFixed(2) %></p>
                 </div>
                 <div class="card__actions">
                     <a href="/products/<%= product._id %>" class="btn">Details</a>
                     <% if(isAuthenticated) { %>
-                    <%-include("../includes/add-to-cart.ejs",{product:product})%>
+                    <%- include("../includes/add-to-cart-fixed.ejs", {product: product}) %>
                     <% } %>
                 </div>
             </article>
             <% }; %>
         </div>
-        <%-include("../includes/pagination.ejs",{currentPage,nextPage,previousPage,lastPage,hasNextPage,hasPreviousPage})%>
-        <% }else{ %>
+        <%- include("../includes/pagination.ejs", {
+            currentPage,
+            nextPage,
+            previousPage,
+            lastPage,
+            hasNextPage,
+            hasPreviousPage
+        }) %>
+        <% } else { %>
         <h1>No Products</h1>
         <% } %>
     </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <%- include("../includes/end.ejs")%>
     <%- include("../includes/footer.ejs") %>

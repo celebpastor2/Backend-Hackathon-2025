@@ -25,6 +25,11 @@ const userSchema = new Schema({
           required: true,
         },
         quantity: { type: Number, required: true },
+        profileImage: {
+  type: String,
+  default: null
+},
+
       },
     ],
   },
@@ -39,7 +44,27 @@ const userSchema = new Schema({
   buyAmount: {type:Number, default:0.00},
   buyTime: {type:Number, default:0},
 });
-
+// Add this method to your User model (user.js)
+userSchema.methods.reduceQuantity = function(productId) {
+  const cartProductIndex = this.cart.items.findIndex(cp => {
+    return cp.productId.toString() === productId.toString();
+  });
+  
+  if (cartProductIndex >= 0) {
+    const updatedCartItems = [...this.cart.items];
+    
+    if (updatedCartItems[cartProductIndex].quantity > 1) {
+      updatedCartItems[cartProductIndex].quantity = updatedCartItems[cartProductIndex].quantity - 1;
+    } else {
+      updatedCartItems.splice(cartProductIndex, 1);
+    }
+    
+    this.cart = { items: updatedCartItems };
+    return this.save();
+  }
+  
+  return Promise.resolve();
+};
 userSchema.methods.removeFromCart = function (productId) {
   const updatedCartItems = this.cart.items.filter((item) => {
     return item.productId.toString() !== productId.toString();

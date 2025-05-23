@@ -1,5 +1,25 @@
-<%- include('../includes/head.ejs') %>
-<h1>Withdraw</h1>
-<p>Withdraw your balance here.</p>
-<%- include('../includes/end.ejs') %>
-  <%- include("../includes/footer.ejs") %>
+<%- include('../includes/head') %>
+<%- include('../includes/navigation') %>
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Withdraw</title>
+</head>
+<body>
+  <h1>Withdraw Funds</h1>
+  
+  <% if (error && error.length > 0) { %>
+    <p style="color:red;"><%= error[0] %></p>
+  <% } %>
+
+  <form action="/withdraw" method="POST">
+    <input type="number" name="amount" placeholder="Enter amount" required step="0.01" min="0.01" />
+    <button type="submit">Withdraw</button>
+  </form>
+</body>
+</html>
+
+
+
+<%- include('../includes/footer') %>

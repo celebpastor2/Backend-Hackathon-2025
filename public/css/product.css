@@ -70,3 +70,109 @@ button {
      make sure you have an empty gif */
   background-image: url('empty.gif');
 }
+/* Product Added Popup */
+.product-added-popup {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: white;
+  border-left: 4px solid #4CAF50; /* Green color for success */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 15px 20px;
+  border-radius: 4px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  transform: translateX(120%);
+  transition: transform 0.3s ease-out;
+  max-width: 350px;
+}
+
+.product-added-popup.show {
+  transform: translateX(0);
+}
+
+.popup-icon {
+  margin-right: 15px;
+  color: #4CAF50;
+  font-size: 1.5rem;
+}
+
+.popup-content {
+  flex: 1;
+}
+
+.popup-content h4 {
+  font-weight: bold;
+  margin: 0 0 5px 0;
+}
+
+.popup-content p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.popup-close {
+  background: none;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0;
+  margin-left: 10px;
+}
+
+/* Floating Cart */
+.floating-cart {
+  position: fixed;
+  bottom: 80px;
+  right: 30px;
+  background-color: var(--color-primary);
+  color: white;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  z-index: 100;
+  transition: all 0.3s ease;
+  transform: scale(0);
+}
+
+.floating-cart.show {
+  transform: scale(1);
+}
+
+.floating-cart:hover {
+  transform: scale(1.1);
+}
+
+.floating-cart.pulse {
+  animation: pulse 0.5s ease;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.floating-cart-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: var(--color-secondary);
+  color: white;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: bold;
+}

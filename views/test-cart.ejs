@@ -1,0 +1,77 @@
+<%- include("../includes/head.ejs")%>
+<link rel="stylesheet" href="/css/product.css">
+<style>
+  .test-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .test-product {
+    border: 1px solid #ddd;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+  }
+  
+  .test-buttons {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+  }
+  
+  .debug-button {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+</style>
+</head>
+
+<body>
+    <%- include("../includes/navigation.ejs")%>
+    
+    <main class="test-container">
+        <h1>Cart Testing Page</h1>
+        
+        <div class="test-product">
+            <h2>Test Product</h2>
+            <p>This is a test product to verify cart functionality</p>
+            <p>Price: $99.99</p>
+            
+            <div class="test-buttons">
+                <% 
+                const testProduct = {
+                  _id: "test123",
+                  title: "Test Product",
+                  price: 99.99,
+                  imageUrl: "/placeholder.svg"
+                };
+                %>
+                
+                <%- include("../includes/add-to-cart.ejs", {product: testProduct, csrfToken: csrfToken})%>
+                
+                <button class="debug-button" onclick="document.getElementById('debugInfo').style.display = 'block';">
+                    Show Debug Info
+                </button>
+            </div>
+        </div>
+        
+        <div>
+            <h3>Troubleshooting Steps:</h3>
+            <ol>
+                <li>Click the "Add to Cart" button</li>
+                <li>Check if the debug panel shows any errors</li>
+                <li>Verify if the cart badge in navigation updates</li>
+                <li>Check if the popup notification appears</li>
+                <li>Verify if the floating cart appears with the correct count</li>
+            </ol>
+        </div>
+    </main>
+    
+    <%- include("../includes/end.ejs")%>
+</body>
+</html>

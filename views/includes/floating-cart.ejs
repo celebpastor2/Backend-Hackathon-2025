@@ -1,0 +1,44 @@
+<div id="floatingCart" class="floating-cart">
+  <i class="fas fa-shopping-cart"></i>
+  <span id="floatingCartBadge" class="floating-cart-badge">
+    <% if(isAuthenticated && currentUser.cart && currentUser.cart.items) { %>
+      <%= currentUser.cart.items.length %>
+    <% } else { %>
+      0
+    <% } %>
+  </span>
+</div>
+<div class="cart-floating">
+  <a href="/cart" class="cart-floating__link">
+    <div class="cart-floating__icon">
+      <i class="fas fa-shopping-cart"></i>
+      <span class="cart-floating__badge" id="cart-count-floating">0</span>
+    </div>
+  </a>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const floatingCart = document.getElementById("floatingCart");
+    
+    // Show floating cart when scrolling down
+    window.addEventListener("scroll", function() {
+      if (window.scrollY > 300) {
+        floatingCart.classList.add("show");
+      } else {
+        floatingCart.classList.remove("show");
+      }
+    });
+    
+    // Show floating cart immediately if there are items in the cart
+    const floatingCartBadge = document.getElementById("floatingCartBadge");
+    if (floatingCartBadge && parseInt(floatingCartBadge.textContent) > 0) {
+      floatingCart.classList.add("show");
+    }
+    
+    // Add click event to redirect to cart
+    floatingCart.addEventListener("click", function() {
+      window.location.href = "/cart";
+    });
+  });
+</script>

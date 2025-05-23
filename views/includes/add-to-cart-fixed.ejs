@@ -28,8 +28,8 @@
         // Show popup
         showAddedToCartPopup("<%= product.title %>");
         
-        // Immediately update cart count without waiting
-        updateCartCountImmediately();
+        // Update cart count from server
+        updateCartCount();
         
         console.log("Product added to cart successfully!");
       } else {
@@ -43,57 +43,44 @@
       this.disabled = false;
       
       console.error("Error:", error);
-      showErrorMessage("Error: " + error.message);
+      showErrorMessage("Error adding product to cart");
     });
   });
-  
-  // Function to immediately update cart count
-  function updateCartCountImmediately() {
-    // First, optimistically update the count
-    const cartBadges = document.querySelectorAll(".cart__badge, .cart-badge, #cart-count, .cart-floating__badge");
-    cartBadges.forEach(badge => {
-      if (badge) {
-        const currentCount = parseInt(badge.textContent || "0");
-        badge.textContent = currentCount + 1;
-        
-        // Make badge visible
-        badge.style.display = 'flex';
-        badge.style.visibility = 'visible';
-        badge.style.opacity = '1';
-      }
-    });
-    
-    // Then fetch the actual count from server to ensure accuracy
-    setTimeout(() => {
-      updateCartCount();
-    }, 500);
-  }
   
   // Function to update cart count from server
   function updateCartCount() {
     fetch('/cart-count')
       .then(response => response.json())
       .then(data => {
-        // Update all possible cart count elements
-        const cartBadges = document.querySelectorAll(".cart__badge, .cart-badge, #cart-count, .cart-floating__badge");
-        cartBadges.forEach(badge => {
-          if (badge) {
-            badge.textContent = data.count;
+        // Update all cart count elements
+        const cartCountElements = document.querySelectorAll('.cart__badge, #cart-count, .cart-count');
+        cartCountElements.forEach(element => {
+          if (element) {
+            element.textContent = data.count;
             
-            // Make badge visible if count > 0
+            // Show/hide badge based on count
             if (data.count > 0) {
-              badge.style.display = 'flex';
-              badge.style.visibility = 'visible';
-              badge.style.opacity = '1';
+              element.style.display = 'flex';
+              element.style.visibility = 'visible';
             } else {
-              badge.style.display = 'none';
+              element.style.display = 'none';
+              element.style.visibility = 'hidden';
             }
           }
         });
+        
+        // Update floating cart badge specifically
+        const floatingCartBadge = document.querySelector('.cart-floating__badge');
+        if (floatingCartBadge) {
+          floatingCartBadge.textContent = data.count;
+          if (data.count > 0) {
+            floatingCartBadge.style.display = 'flex';
+          } else {
+            floatingCartBadge.style.display = 'none';
+          }
+        }
       })
-      .catch(error => {
-        console.error("Error fetching cart count:", error);
-      });
+      .catch(error => console.error('Error fetching cart count:', error));
   }
   
   // Function to show popup
@@ -113,9 +100,8 @@
         border-radius: 4px;
         box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         z-index: 1000;
-        transition: transform 0.3s ease-out, opacity 0.3s;
+        transition: transform 0.3s ease-out;
         transform: translateX(120%);
-        opacity: 0;
         max-width: 300px;
       `;
       
@@ -131,14 +117,9 @@
         <div style="flex: 1;">
           <div style="font-weight: bold; margin-bottom: 5px; color: #333;">${productTitle}</div>
           <div style="font-size: 14px; color: #666;">Added to your cart</div>
-          <div style="margin-top: 8px;">
-            <a href="/cart" style="color: #4CAF50; text-decoration: none; font-size: 14px; font-weight: bold;">
-              View Cart <i class="fas fa-arrow-right" style="font-size: 12px;"></i>
-            </a>
-          </div>
         </div>
         <button onclick="hidePopup()" 
-                style="background: none; border: none; color: #999; cursor: pointer; margin-left: 15px; font-size: 16px; padding: 5px;">
+                style="background: none; border: none; color: #999; cursor: pointer; margin-left: 15px; font-size: 16px;">
           <i class="fas fa-times"></i>
         </button>
       </div>
@@ -147,7 +128,6 @@
     // Show popup
     setTimeout(() => {
       popup.style.transform = "translateX(0)";
-      popup.style.opacity = "1";
     }, 100);
     
     // Hide popup after 4 seconds
@@ -161,7 +141,6 @@
     const popup = document.getElementById("addedToCartPopup");
     if (popup) {
       popup.style.transform = "translateX(120%)";
-      popup.style.opacity = "0";
     }
   }
   
@@ -182,9 +161,8 @@
         border-radius: 4px;
         box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         z-index: 1000;
-        transition: transform 0.3s ease-out, opacity 0.3s;
+        transition: transform 0.3s ease-out;
         transform: translateX(120%);
-        opacity: 0;
         max-width: 300px;
       `;
       
@@ -202,7 +180,7 @@
           <div style="font-size: 14px; color: #666;">${message}</div>
         </div>
         <button onclick="hideErrorPopup()" 
-                style="background: none; border: none; color: #999; cursor: pointer; margin-left: 15px; font-size: 16px; padding: 5px;">
+                style="background: none; border: none; color: #999; cursor: pointer; margin-left: 15px; font-size: 16px;">
           <i class="fas fa-times"></i>
         </button>
       </div>
@@ -211,7 +189,6 @@
     // Show error popup
     setTimeout(() => {
       errorPopup.style.transform = "translateX(0)";
-      errorPopup.style.opacity = "1";
     }, 100);
     
     // Hide error popup after 4 seconds
@@ -225,7 +202,6 @@
     const errorPopup = document.getElementById("errorPopup");
     if (errorPopup) {
       errorPopup.style.transform = "translateX(120%)";
-      errorPopup.style.opacity = "0";
     }
   }
   

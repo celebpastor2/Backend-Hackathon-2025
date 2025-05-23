@@ -1,0 +1,20 @@
+<%- include("../includes/head.ejs")%>
+<link rel="stylesheet" href="/css/cart.css">
+</head>
+
+<body>
+    <%- include("../includes/navigation.ejs")%>
+    <main>
+        <div class="centered">
+            <h1>Payment Failed</h1>
+            <p>Your payment was not successful. Please try again.</p>
+            <div class="actions">
+                <a href="/checkout" class="btn">Try Again</a>
+                <a href="/" class="btn">Continue Shopping</a>
+            </div>
+        </div>
+    </main>
+    <%- include("../includes/end.ejs")%>
+    <%- include("../includes/footer.ejs") %>
+</body>
+</html>
